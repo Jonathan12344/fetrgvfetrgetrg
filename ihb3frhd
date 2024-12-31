@@ -1,0 +1,66 @@
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local screenGui = Instance.new("ScreenGui", playerGui)
+
+
+local textButton = Instance.new("TextButton")
+textButton.Size = UDim2.new(0, 450,  0,  200)
+textButton.Position = UDim2.new(0, 5, 0, 50)
+textButton.Text = "spindashing"
+textButton.Parent = screenGui
+
+
+local animationId = "rbxassetid://18400648383" -- Updated animation ID
+local animator = player.Character:WaitForChild("Humanoid"):WaitForChild("Animator")
+local animation = Instance.new("Animation")
+animation.AnimationId = animationId
+
+
+local function spindash()
+    local character = player.Character
+    if character and character:FindFirstChild("Humanoid") then
+        
+        local animTrack = animator:LoadAnimation(animation)
+        animTrack:Play()
+        
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+        local spindashForce = Instance.new("BodyVelocity")
+        spindashForce.MaxForce = Vector3.new(4000, 4000, 4000)
+        spindashForce.Parent = humanoidRootPart
+        
+        
+        spindashForce.Velocity = humanoidRootPart.CFrame.LookVector * 145
+        
+        
+        local startTime = tick()
+        
+        while tick() - startTime < 5 do
+            
+            spindashForce.Velocity = humanoidRootPart.CFrame.LookVector * 145
+            wait(0.2) 
+        end
+        
+        
+        spindashForce:Destroy()
+        
+        
+        animTrack:Stop()
+    end
+end
+
+
+textButton.MouseButton1Click:Connect(spindash)
+
+
+local UserInputService = game:GetService("UserInputService")
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.UserInputType == Enum.UserInputType.Keyboard then
+        if input.KeyCode == Enum.KeyCode.T then
+            spindash() 
+        end
+    end
+end)
+
+-- credits
